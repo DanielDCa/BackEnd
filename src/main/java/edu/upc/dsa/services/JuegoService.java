@@ -22,9 +22,9 @@ public class JuegoService {
     public JuegoService() {
         this.jm = JuegoImpl.getInstance();
         if(jm.sizeUser()==0){
-            this.jm.Registro("1","Carlos","Antonio","dadacaefsa");
-            this.jm.Registro("2","Victor","Maria","dadacaefsa");
-            this.jm.Registro("3","Toni","Montana","dadacaefsa");
+            this.jm.Registro("carlo@upc.edu","TheKiller99","Antonio","Miranda","dadacaefsa");
+            this.jm.Registro("victor@upc.edu","Victory_777","Victor","Gutierrez","dadacaefsa");
+            this.jm.Registro("toni@upc.edu","ToniMontana","Toni","Montana","dadacaefsa");
         }
     }
     //Obtener un usuario
@@ -34,10 +34,10 @@ public class JuegoService {
             @ApiResponse(code = 201, message = "Successful", response = Usuario.class),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @Path("/{id}")
+    @Path("/{apodo}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTrack(@PathParam("id") String id) {
-        Usuario u = this.jm.getUsuario(id);
+    public Response getUser(@PathParam("apodo") String apodo) {
+        Usuario u = this.jm.getUsuario(apodo);
         if (u == null) return Response.status(404).build();
         else  return Response.status(201).entity(u).build();
         //Track t = this.tm.getTrack(id);
@@ -54,10 +54,10 @@ public class JuegoService {
 
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response newTrack(Usuario usuario) {
+    public Response newUser(Usuario usuario) {
 
-        if (usuario.getIdUser()==null || usuario.getPassword()==null || usuario.getNombre()==null )  return Response.status(500).entity(usuario).build();
-        this.jm.Registro(usuario.getIdUser(),usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
+        if (usuario.getCorreo()==null || usuario.getPassword()==null || usuario.getApodo()==null )  return Response.status(500).entity(usuario).build();
+        this.jm.Registro(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
 
         return Response.status(201).entity(usuario).build();
     }
@@ -70,8 +70,6 @@ public class JuegoService {
     })
     @Path("/")
     public Response updateUser(Usuario usuario) {
-
-
 
         Usuario u = this.jm.actualizarUsuario(usuario);
 
@@ -86,14 +84,38 @@ public class JuegoService {
             @ApiResponse(code = 201, message = "Successful"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @Path("/{id}")
-    public Response deleteTrack(@PathParam("id") String id) {
-        Usuario t = this.jm.getUsuario(id);
+    @Path("/{apodo}")
+    public Response deleteUser(@PathParam("apodo") String apodo) {
+        Usuario t = this.jm.getUsuario(apodo);
         if (t == null) return Response.status(404).build();
-        else this.jm.deleteUsuaer(id);
+        else this.jm.deleteUser(apodo);
         return Response.status(201).build();
     }
+    //Login
+    @POST
+    @ApiOperation(value = "Login", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response=Usuario.class),
+            @ApiResponse(code = 500, message = "Validation Error")
 
+    })
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response login(Usuario usu) {
+
+        Usuario u = this.jm.getUsuario(usu.getApodo());
+        if (usu.getApodo() == null || usu.getPassword() == null){
+            return Response.status(404).build();
+
+        }
+        else if(usu.getPassword().equals(u.getPassword())  ){
+            return Response.status(201).entity(u).build();
+        }
+        else{
+            return null;
+        }
+
+    }
     /*@GET
     @ApiOperation(value = "get all Track", notes = "asdasd")
     @ApiResponses(value = {

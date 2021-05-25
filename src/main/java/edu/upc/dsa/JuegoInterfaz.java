@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface JuegoInterfaz {
     //autenticacion
-    public Usuario Registro (String id, String nombre, String apellido, String password);
+    public Usuario Registro (String correo, String apodo, String nombre, String apellido, String password);
     public Usuario Login (String user, String password);
 
 
@@ -15,7 +15,7 @@ public interface JuegoInterfaz {
     public List<Usuario> getAllUser ();
     public Usuario getUsuario (String id);
     public Usuario actualizarUsuario( Usuario usuario) ;
-    public void deleteUsuaer(String id);
+    public void deleteUser(String id);
 
     public List<Jugador> muestrasJugadores (String idJugador);
     public int sizeJugadores();

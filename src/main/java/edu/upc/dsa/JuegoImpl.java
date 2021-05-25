@@ -41,18 +41,18 @@ public class JuegoImpl implements JuegoInterfaz {
 
 
     @Override
-    public Usuario Registro(String id, String nombre, String apellido, String password) {
-        Usuario usuarioNuevo = new Usuario(id, nombre, apellido, password);
+    public Usuario Registro(String correo, String apodo, String nombre, String apellido, String password) {
+        Usuario usuarioNuevo = new Usuario( correo,  apodo, nombre, apellido, password);
         this.usuarios.add(usuarioNuevo);
+
         return usuarioNuevo;
     }
-
     @Override
-    public Usuario Login(String user, String password) {
+    public Usuario Login(String apodo, String password) {
         Usuario userEcontrado = new Usuario();
         for (Usuario u : this.usuarios) {
 
-            if (u.getNombre().equals(user)) {
+            if (u.getNombre().equals(apodo)) {
                 if (u.getPassword().equals(password)) {
                      userEcontrado = u;
                 } else {
@@ -63,7 +63,6 @@ public class JuegoImpl implements JuegoInterfaz {
             }
         }
         return userEcontrado;
-
     }
 
     @Override
@@ -73,10 +72,10 @@ public class JuegoImpl implements JuegoInterfaz {
 
 
     @Override
-    public Usuario getUsuario(String id) {
+    public Usuario getUsuario(String apodo) {
         Usuario usuarioEncontrado = new Usuario();
         for (Usuario u: this.usuarios){
-            if (u.getIdUser().equals(id))
+            if (u.getApodo().equals(apodo))
             {
                 usuarioEncontrado= u;
             }
@@ -88,7 +87,7 @@ public class JuegoImpl implements JuegoInterfaz {
     public Usuario actualizarUsuario(Usuario usuario) {
         Usuario usuarioActualizado = new Usuario();
         for ( Usuario u: this.usuarios){
-            if(u.getIdUser().equals(usuario.getIdUser()))
+            if(u.getApodo().equals(usuario.getApodo()))
 
             {
                 u.setApellido(usuario.getApellido());
@@ -101,9 +100,9 @@ public class JuegoImpl implements JuegoInterfaz {
     }
 
     @Override
-    public void deleteUsuaer(String id) {
+    public void deleteUser(String apodo) {
         for (Usuario u: this.usuarios){
-            if (u.getIdUser().equals(id)){
+            if (u.getApodo().equals(apodo)){
                 this.usuarios.remove(u);
             }
         }
@@ -116,9 +115,7 @@ public class JuegoImpl implements JuegoInterfaz {
             if(j.getId() == idJugador)
             {
                 this.jugones.add(j);
-
             }
-
         }
 
         return this.jugones;

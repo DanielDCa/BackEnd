@@ -2,7 +2,8 @@ package edu.upc.dsa.models;
 
 public class Usuario {
 
-    String idUser;
+    String correo;
+    String apodo;
     String nombre;
     String apellido;
     String password;
@@ -18,25 +19,33 @@ public class Usuario {
         this.password = password;
     }
 
-    public Usuario(String idUser, String nombre, String apellido, String password) {
-        this.idUser = idUser;
+    public Usuario(String correo, String apodo, String nombre, String apellido, String password) {
+        this.correo = correo;
+        this.apodo = apodo;
         this.nombre = nombre;
         this.apellido = apellido;
         this.password = password;
     }
 
-    public Usuario(String id, String nombre, String apellido) {
-        this.idUser = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
+    public Usuario(String apodo, String password) {
+        this.apodo = apodo;
+        this.password = password;
     }
 
-    public String getIdUser() {
-        return idUser;
+    public String getCorreo() {
+        return correo;
     }
 
-    public void setIdUser(String idUser) {
-        this.idUser = idUser;
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getApodo() {
+        return apodo;
+    }
+
+    public void setApodo(String apodo) {
+        this.apodo = apodo;
     }
 
     public String getNombre() {
