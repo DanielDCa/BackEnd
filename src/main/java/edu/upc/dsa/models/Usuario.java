@@ -27,11 +27,6 @@ public class Usuario {
         this.password = password;
     }
 
-    public Usuario(String apodo, String password) {
-        this.apodo = apodo;
-        this.password = password;
-    }
-
     public String getCorreo() {
         return correo;
     }
@@ -62,5 +57,16 @@ public class Usuario {
 
     public void setApellido(String apellido) {
         this.apellido = apellido;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "correo='" + correo + '\'' +
+                ", apodo='" + apodo + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

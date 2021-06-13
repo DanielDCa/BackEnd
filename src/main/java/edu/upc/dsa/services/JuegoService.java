@@ -1,8 +1,10 @@
 package edu.upc.dsa.services;
 
 
+import edu.upc.dsa.IUsuarioDAO;
 import edu.upc.dsa.JuegoImpl;
 import edu.upc.dsa.JuegoInterfaz;
+import edu.upc.dsa.UsuarioDAOImpl;
 import edu.upc.dsa.models.Usuario;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,14 +20,16 @@ import javax.ws.rs.core.Response;
 public class JuegoService {
 
     private JuegoInterfaz jm;
+    private IUsuarioDAO userDao;
 
     public JuegoService() {
-        this.jm = JuegoImpl.getInstance();
-        if(jm.sizeUser()==0){
+       // this.jm = JuegoImpl.getInstance();
+        /*if(jm.sizeUser()==0){
             this.jm.Registro("carlo@upc.edu","TheKiller99","Antonio","Miranda","dadacaefsa");
             this.jm.Registro("victor@upc.edu","Victory_777","Victor","Gutierrez","dadacaefsa");
             this.jm.Registro("toni@upc.edu","ToniMontana","Toni","Montana","dadacaefsa");
-        }
+        }*/
+        userDao = new UsuarioDAOImpl();
     }
     //Obtener un usuario
     @GET
@@ -37,10 +41,13 @@ public class JuegoService {
     @Path("/{apodo}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("apodo") String apodo) {
-        Usuario u = this.jm.getUsuario(apodo);
+        /*Usuario u = this.jm.getUsuario(apodo);
+        if (u == null) return Response.status(404).build();
+        else  return Response.status(201).entity(u).build();*/
+        //Track t = this.tm.getTrack(id);
+        Usuario u = this.userDao.getUsuario(apodo);
         if (u == null) return Response.status(404).build();
         else  return Response.status(201).entity(u).build();
-        //Track t = this.tm.getTrack(id);
 
     }
     //Crear un usuario
@@ -57,7 +64,8 @@ public class JuegoService {
     public Response newUser(Usuario usuario) {
 
         if (usuario.getCorreo()==null || usuario.getPassword()==null || usuario.getApodo()==null )  return Response.status(500).entity(usuario).build();
-        this.jm.Registro(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
+        this.userDao.addUsuario(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
+        //this.jm.Registro(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
 
         return Response.status(201).entity(usuario).build();
     }
@@ -71,9 +79,9 @@ public class JuegoService {
     @Path("/")
     public Response updateUser(Usuario usuario) {
 
-        Usuario u = this.jm.actualizarUsuario(usuario);
-
-        if (u == null) return Response.status(404).build();
+        //Usuario u = this.jm.actualizarUsuario(usuario);
+        this.userDao.updateUsuario(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
+        if (usuario.getCorreo() == null || usuario.getApodo() == null)  return Response.status(404).build();
 
         return Response.status(201).build();
     }
@@ -84,11 +92,11 @@ public class JuegoService {
             @ApiResponse(code = 201, message = "Successful"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @Path("/{apodo}")
-    public Response deleteUser(@PathParam("apodo") String apodo) {
-        Usuario t = this.jm.getUsuario(apodo);
-        if (t == null) return Response.status(404).build();
-        else this.jm.deleteUser(apodo);
+    @Path("/{correo}")
+    public Response deleteUser(@PathParam("correo") String correo) {
+
+        if (correo == null) return Response.status(404).build();
+        else this.userDao.deleteUsuario(correo);
         return Response.status(201).build();
     }
     //Login
@@ -103,7 +111,7 @@ public class JuegoService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response login(Usuario usu) {
 
-        Usuario u = this.jm.getUsuario(usu.getApodo());
+        Usuario u = this.userDao.login(usu.getApodo(), usu.getPassword());
         if (usu.getApodo() == null || usu.getPassword() == null){
             return Response.status(404).build();
 
