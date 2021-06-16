@@ -82,5 +82,12 @@ public class QueryHelper {
         return sb.toString();
 
     }
+    public static String createQuerySELECT2(Class theClasss) {//Caso de armas
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT * FROM ").append(theClasss.getSimpleName());
+
+
+        return sb.toString();
+    }
 
 }

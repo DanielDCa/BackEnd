@@ -4,6 +4,12 @@ import edu.upc.dsa.models.Usuario;
 
 public class UsuarioDAOImpl implements  IUsuarioDAO{
 
+    private static UsuarioDAOImpl manager;
+
+    public static UsuarioDAOImpl getInstance()  /*Singletone, puerta de entrada a la instancia*/ {
+        if (manager == null) manager = new UsuarioDAOImpl();
+        return manager;
+    }
 
     @Override
     public String addUsuario(String correo, String apodo, String nombre, String apellido, String password) {

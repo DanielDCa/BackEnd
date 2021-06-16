@@ -7,6 +7,7 @@ import edu.upc.dsa.util.QueryHelper;
 
 import java.sql.*;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -175,8 +176,121 @@ public class SessionImpl implements Session {
     }
 
     public List<Object> findAll(Class theClass) {
-        return null;
+
+        String selectQuery = QueryHelper.createQuerySELECT2(theClass);//createQuery... recibe un object
+        //System.out.println();
+        System.out.println(selectQuery);
+
+        PreparedStatement pstm = null;
+        List<Object> objetos;
+        objetos = new LinkedList<>();
+
+        try {
+            pstm = conn.prepareStatement(selectQuery);
+            //pstm.setObject(1, 0)
+
+            ResultSet rs = pstm.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            //rsmd.getColumnName(1);
+            String nombre;
+
+
+            int i =0;
+            while(rs.next()){
+                System.out.println("Numero columnas: " + rsmd.getColumnCount());
+
+                try {
+                    objetos.add( theClass.newInstance());
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
+                for (int j = 1; j <= rsmd.getColumnCount(); j++) {
+
+                    nombre = rsmd.getColumnName(j);
+
+                    //Mostramos el objeto
+                    System.out.println(nombre + ": " + rs.getObject(nombre));
+
+                    //Con ayuda de ObjectHelper añadimos cada atributo
+                    ObjectHelper.setter(objetos.get(i),nombre,rs.getObject(nombre));
+
+                }
+                System.out.println(i);
+                //Indice que nos permite recorrer el linkedlist
+                i++;
+
+            }
+
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return objetos;
     }
+    public List<Object> findAllByParamenter(Class theClass,String pk, String value) {
+
+        String selectQuery = QueryHelper.createQuerySELECT(theClass,pk);//createQuery... recibe un object
+        //System.out.println();
+        System.out.println(selectQuery);
+
+        PreparedStatement pstm = null;
+        List<Object> objetos;
+        objetos = new LinkedList<>();
+
+        try {
+            pstm = conn.prepareStatement(selectQuery);
+            //pstm.setObject(1, 0)
+            pstm.setObject(1, value);
+
+            ResultSet rs = pstm.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            //rsmd.getColumnName(1);
+            String nombre;
+
+
+            int i =0;
+            while(rs.next()){
+                System.out.println("Numero columnas: " + rsmd.getColumnCount());
+
+                try {
+                    objetos.add( theClass.newInstance());
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
+                for (int j = 1; j <= rsmd.getColumnCount(); j++) {
+
+                    nombre = rsmd.getColumnName(j);
+
+                    //Mostramos el objeto
+                    System.out.println(nombre + ": " + rs.getObject(nombre));
+
+                    //Con ayuda de ObjectHelper añadimos cada atributo
+                    ObjectHelper.setter(objetos.get(i),nombre,rs.getObject(nombre));
+
+                }
+                System.out.println(i);
+                //Indice que nos permite recorrer el linkedlist
+                i++;
+
+            }
+
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return objetos;
+    }
+
 
     public List<Object> findAll(Class theClass, HashMap params) {
         return null;

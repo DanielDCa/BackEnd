@@ -10,6 +10,7 @@ public interface Session<E> {
     void update(Object object, String pk, String value);
     void delete(Object object, String pk, String value);
     List<Object> findAll(Class theClass);
+    List<Object> findAllByParamenter(Class theClass,String pk, String value);
     List<Object> findAll(Class theClass, HashMap params);
     List<Object> query(String query, Class theClass, HashMap params);
 }

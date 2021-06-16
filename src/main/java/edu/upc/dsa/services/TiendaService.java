@@ -1,10 +1,9 @@
 package edu.upc.dsa.services;
 
 
-import edu.upc.dsa.IUsuarioDAO;
-import edu.upc.dsa.JuegoImpl;
-import edu.upc.dsa.JuegoInterfaz;
-import edu.upc.dsa.UsuarioDAOImpl;
+import edu.upc.dsa.*;
+import edu.upc.dsa.models.Arma;
+import edu.upc.dsa.models.Compra_arma;
 import edu.upc.dsa.models.Usuario;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,118 +11,84 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.LinkedList;
+import java.util.List;
 
-@Api(value = "/user", description = "Endpoint to Track Service")
-@Path("/user")
-public class JuegoService {
+@Api(value = "/store", description = "Endpoint to Track Service")
+@Path("/store")
+public class TiendaService {
 
     private JuegoInterfaz jm;
-    private IUsuarioDAO userDao;
+    private IArmaDAO armaDao;
 
-    public JuegoService() {
+    public TiendaService() {
        // this.jm = JuegoImpl.getInstance();
         /*if(jm.sizeUser()==0){
             this.jm.Registro("carlo@upc.edu","TheKiller99","Antonio","Miranda","dadacaefsa");
             this.jm.Registro("victor@upc.edu","Victory_777","Victor","Gutierrez","dadacaefsa");
             this.jm.Registro("toni@upc.edu","ToniMontana","Toni","Montana","dadacaefsa");
         }*/
-        this.userDao = UsuarioDAOImpl.getInstance();
+        armaDao = ArmaDAOImpl.getInstance();
     }
-    //Obtener un usuario
+    //Obtener armas que se mostraran en la tienda
     @GET
-    @ApiOperation(value = "get a User", notes = "asdasd")
+    @ApiOperation(value = "get all weapons", notes = "asdasd")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response = Usuario.class),
+            @ApiResponse(code = 201, message = "Successful", response = Arma.class),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @Path("/{apodo}")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(@PathParam("apodo") String apodo) {
-        /*Usuario u = this.jm.getUsuario(apodo);
-        if (u == null) return Response.status(404).build();
-        else  return Response.status(201).entity(u).build();*/
-        //Track t = this.tm.getTrack(id);
-        Usuario u = this.userDao.getUsuario(apodo);
-        if (u == null) return Response.status(404).build();
-        else  return Response.status(201).entity(u).build();
+    public Response getAllWeapons() {
 
+        List<Arma> armas = armaDao.getAllArmas();
+        if (armas == null) return Response.status(404).build();
+        else{
+            GenericEntity<List<Arma>> entity = new GenericEntity<List<Arma>>(armas) {};
+            return Response.status(201).entity(entity).build();
+        }
     }
-    //Crear un usuario
+    //Comprar arma
     @POST
-    @ApiOperation(value = "create a new User", notes = "asdasd")
+    @ApiOperation(value = "Buy a weapon", notes = "asdasd")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response=Usuario.class),
+            @ApiResponse(code = 201, message = "Successful", response= Compra_arma.class),
             @ApiResponse(code = 500, message = "Validation Error")
 
     })
 
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response newUser(Usuario usuario) {
+    public Response buyWeapon(Compra_arma compraArma) {
 
-        if (usuario.getCorreo()==null || usuario.getPassword()==null || usuario.getApodo()==null )  return Response.status(500).entity(usuario).build();
-        this.userDao.addUsuario(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
+        if (compraArma.getCorreo_usuario()==null || compraArma.getNombre_arma()==null || compraArma.getForma_pago()==null )  return Response.status(500).entity(compraArma).build();
+        this.armaDao.comprarArma(compraArma.getNombre_arma(),compraArma.getCorreo_usuario(),compraArma.getForma_pago());
         //this.jm.Registro(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
 
-        return Response.status(201).entity(usuario).build();
+        return Response.status(201).entity(compraArma).build();
     }
-    //Actualizar un usuario
-    @PUT
-    @ApiOperation(value = "update a User", notes = "asdasd")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful"),
-            @ApiResponse(code = 404, message = "User not found")
-    })
-    @Path("/")
-    public Response updateUser(Usuario usuario) {
 
-        //Usuario u = this.jm.actualizarUsuario(usuario);
-        this.userDao.updateUsuario(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
-        if (usuario.getCorreo() == null || usuario.getApodo() == null)  return Response.status(404).build();
-
-        return Response.status(201).build();
-    }
-    //Eliminar un usuario
-    @DELETE
-    @ApiOperation(value = "delete a User", notes = "asdasd")
+    //Lista de armas compradas
+    @GET
+    @ApiOperation(value = "get my weapons", notes = "asdasd")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful"),
+            @ApiResponse(code = 201, message = "Successful", response = Compra_arma.class),
             @ApiResponse(code = 404, message = "User not found")
     })
     @Path("/{correo}")
-    public Response deleteUser(@PathParam("correo") String correo) {
-
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMyWeapons(@PathParam("correo") String correo) {
+        List<Compra_arma> armasCom = armaDao.getArmasCompradas(correo);
         if (correo == null) return Response.status(404).build();
-        else this.userDao.deleteUsuario(correo);
-        return Response.status(201).build();
-    }
-    //Login
-    @POST
-    @ApiOperation(value = "Login", notes = "asdasd")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successful", response=Usuario.class),
-            @ApiResponse(code = 500, message = "Validation Error")
-
-    })
-    @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response login(Usuario usu) {
-
-        Usuario u = this.userDao.login(usu.getApodo(), usu.getPassword());
-        if (usu.getApodo() == null || usu.getPassword() == null){
-            return Response.status(404).build();
-
-        }
-        else if(usu.getPassword().equals(u.getPassword())  ){
-            return Response.status(201).entity(u).build();
-        }
         else{
-            return null;
+            GenericEntity<List<Compra_arma>> entity = new GenericEntity<List<Compra_arma>>(armasCom) {};
+            return Response.status(201).entity(entity).build();
         }
-
     }
+    //Actualizar un usuario
     /*@GET
     @ApiOperation(value = "get all Track", notes = "asdasd")
     @ApiResponses(value = {
