@@ -45,7 +45,10 @@ public class Main2 {
         carmas = armaDAO.getArmasCompradas("Carlo@upc.edu");
         System.out.println(carmas);*/
 
-        armaDAO.comprarArma("lanzabombas","Carlo@upc.edu","Cualquiera");
+      //  armaDAO.comprarArma("lanzabombas","Carlo@upc.edu","Cualquiera");
+
+        System.out.println(Encryption.enCode("Hola"));
+
     }
 
 }

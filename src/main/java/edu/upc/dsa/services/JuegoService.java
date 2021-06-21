@@ -1,10 +1,7 @@
 package edu.upc.dsa.services;
 
 
-import edu.upc.dsa.IUsuarioDAO;
-import edu.upc.dsa.JuegoImpl;
-import edu.upc.dsa.JuegoInterfaz;
-import edu.upc.dsa.UsuarioDAOImpl;
+import edu.upc.dsa.*;
 import edu.upc.dsa.models.Usuario;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -64,9 +61,8 @@ public class JuegoService {
     public Response newUser(Usuario usuario) {
 
         if (usuario.getCorreo()==null || usuario.getPassword()==null || usuario.getApodo()==null )  return Response.status(500).entity(usuario).build();
-        this.userDao.addUsuario(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
-        //this.jm.Registro(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
 
+        this.userDao.addUsuario(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), Encryption.enCode(usuario.getPassword()));
         return Response.status(201).entity(usuario).build();
     }
     //Actualizar un usuario
@@ -80,7 +76,7 @@ public class JuegoService {
     public Response updateUser(Usuario usuario) {
 
         //Usuario u = this.jm.actualizarUsuario(usuario);
-        this.userDao.updateUsuario(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), usuario.getPassword());
+        this.userDao.updateUsuario(usuario.getCorreo(), usuario.getApodo(), usuario.getNombre(), usuario.getApellido(), Encryption.enCode(usuario.getPassword()));
         if (usuario.getCorreo() == null || usuario.getApodo() == null)  return Response.status(404).build();
 
         return Response.status(201).build();
@@ -111,12 +107,13 @@ public class JuegoService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response login(Usuario usu) {
 
-        Usuario u = this.userDao.login(usu.getApodo(), usu.getPassword());
+        String passEncrypted = Encryption.enCode(usu.getPassword());
+        Usuario u = this.userDao.login(usu.getApodo(),passEncrypted);
         if (usu.getApodo() == null || usu.getPassword() == null){
             return Response.status(404).build();
 
         }
-        else if(usu.getPassword().equals(u.getPassword())  ){
+        else if(passEncrypted.equals(u.getPassword())  ){
             return Response.status(201).entity(u).build();
         }
         else{

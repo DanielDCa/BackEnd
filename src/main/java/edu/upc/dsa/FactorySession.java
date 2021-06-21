@@ -18,7 +18,8 @@ public class    FactorySession {
         try {
             //Class.forName("com.mysql.jdbc.Driver");
             conn =
-                    DriverManager.getConnection("jdbc:mysql://localhost/juego?" +
+
+                   DriverManager.getConnection("jdbc:mysql://localhost/juego?" +
             "user=root&password=Daniel_18");
             //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/juego","root","Daniel_18");
             System.out.println("Conexion establecida con la base de datos");
