@@ -18,7 +18,7 @@ public class SessionImpl implements Session {
         this.conn = conn;
     }
 
-    //Le pasas un objeto cualquiera(Employe, Department), y te lo guarda en la base de datos (Registro)
+    //Le pasas un objeto cualquiera(Employe, Department), y te lo guarda en la base de datos (Registro).
     public void save(Object entity) {
 
         String insertQuery = QueryHelper.createQueryINSERT(entity);
@@ -65,6 +65,7 @@ public class SessionImpl implements Session {
             try {
                  obj = theClass.newInstance();
 
+
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
@@ -90,6 +91,9 @@ public class SessionImpl implements Session {
 
                 }
             }
+            else{
+                obj = null;
+            }
 
 
            /* while (rs.next())
@@ -103,6 +107,9 @@ public class SessionImpl implements Session {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        if( obj == null){
+            System.out.println("El usuario es null");
         }
 
         return obj;

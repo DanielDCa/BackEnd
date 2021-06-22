@@ -22,8 +22,8 @@ public class Main2 {
         //String adas = userDao.addUsuario("pepe@upc.edu","pepito_02","Pepe Maria","Garcia","1234");
 
         //Probando el SELECT
-        //Object obj = userDao.getUsuario("carlitos_98");
-        //System.out.println(obj.toString());
+        Object obj = userDao.getUsuarioByCorreo("hola@hotmail.c");
+        System.out.println(obj);
 
         //Probando el UPDATE  (Verificación siempre con correo)
         //userDao.updateUsuario("pepe@upc.edu","pepito_02","Pepe Maria","Garcia buhbuh","1234");
@@ -52,8 +52,8 @@ public class Main2 {
 
 
         /*Probando casillas de mapa*/
-        ICasillasDAO casillaDAO = CasillasDAOImpl.getInstance();
-        System.out.println(casillaDAO.getCasillasLevel(1));
+        /*ICasillasDAO casillaDAO = CasillasDAOImpl.getInstance();
+        System.out.println(casillaDAO.getCasillasLevel(1));*/
 
     }
 

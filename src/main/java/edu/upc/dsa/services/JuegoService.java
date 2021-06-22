@@ -57,10 +57,7 @@ public class JuegoService {
     @Path("/adress/{correo}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserByAddress(@PathParam("correo") String correo) {
-        /*Usuario u = this.jm.getUsuario(apodo);
-        if (u == null) return Response.status(404).build();
-        else  return Response.status(201).entity(u).build();*/
-        //Track t = this.tm.getTrack(id);
+
         Usuario u = this.userDao.getUsuarioByCorreo(correo);
         if (u == null) return Response.status(404).build();
         else  return Response.status(201).entity(u).build();
