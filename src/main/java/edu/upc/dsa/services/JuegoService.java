@@ -28,7 +28,7 @@ public class JuegoService {
         }*/
         this.userDao = UsuarioDAOImpl.getInstance();
     }
-    //Obtener un usuario
+    //Obtener un usuario por apodo
     @GET
     @ApiOperation(value = "get a User", notes = "asdasd")
     @ApiResponses(value = {
@@ -43,6 +43,25 @@ public class JuegoService {
         else  return Response.status(201).entity(u).build();*/
         //Track t = this.tm.getTrack(id);
         Usuario u = this.userDao.getUsuario(apodo);
+        if (u == null) return Response.status(404).build();
+        else  return Response.status(201).entity(u).build();
+
+    }
+    //Obtener un usuario por correo
+    @GET
+    @ApiOperation(value = "get a User", notes = "asdasd")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successful", response = Usuario.class),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @Path("/adress/{correo}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserByAddress(@PathParam("correo") String correo) {
+        /*Usuario u = this.jm.getUsuario(apodo);
+        if (u == null) return Response.status(404).build();
+        else  return Response.status(201).entity(u).build();*/
+        //Track t = this.tm.getTrack(id);
+        Usuario u = this.userDao.getUsuarioByCorreo(correo);
         if (u == null) return Response.status(404).build();
         else  return Response.status(201).entity(u).build();
 

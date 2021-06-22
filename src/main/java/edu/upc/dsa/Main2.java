@@ -49,6 +49,12 @@ public class Main2 {
 
         System.out.println(Encryption.enCode("Hola"));
 
+
+
+        /*Probando casillas de mapa*/
+        ICasillasDAO casillaDAO = CasillasDAOImpl.getInstance();
+        System.out.println(casillaDAO.getCasillasLevel(1));
+
     }
 
 }

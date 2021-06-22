@@ -51,6 +51,25 @@ public class UsuarioDAOImpl implements  IUsuarioDAO{
     }
 
     @Override
+    public Usuario getUsuarioByCorreo(String correo) {
+
+        Session session = null;
+        Usuario usuario = null;
+        try {
+            session = FactorySession.openSession();
+            usuario = (Usuario)session.get(Usuario.class, "correo", correo);
+        }
+        catch (Exception e) {
+            // LOG
+        }
+        finally {
+            session.close();
+        }
+
+        return usuario;
+    }
+
+    @Override
     public void updateUsuario(String correo, String apodo, String name, String apellido, String password) {
 
         Session session = null;
